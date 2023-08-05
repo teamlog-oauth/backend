@@ -15,7 +15,6 @@ import { UserModule } from './user/user.module';
       envFilePath: '.env',
       validationSchema: configValidationSchema,
     }),
-    CacheModule.register(),
     DatabaseModule,
     AuthModule,
     UserModule,

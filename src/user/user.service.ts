@@ -1,4 +1,4 @@
-import { HttpException, Injectable } from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -13,18 +13,21 @@ export class UserService {
     private readonly userRepository: Repository<User>,
   ) {}
 
-  public create(createUserDto: CreateUserDto) {
-    return this.userRepository.save({
+  public async create(createUserDto: CreateUserDto) {
+    const newUser = this.userRepository.create({
       ...createUserDto,
       password: sha256(createUserDto.password),
     });
+
+    return this.userRepository.save(newUser);
   }
 
   public findAll() {
     return this.userRepository.find();
   }
 
-  public async findOne(id: string) {
+  // eslint-disable-next-line @typescript-eslint/no-inferrable-types
+  public async findOne(id: string, error: boolean = true) {
     const user =
       (await this.userRepository.findOneBy({ uuid: id })) ??
       (await this.userRepository.findOneBy({
@@ -34,7 +37,8 @@ export class UserService {
         email: id,
       }));
 
-    if (!user) throw new HttpException('User not found', 404);
+    if (!user && error)
+      throw new HttpException('User not founds', HttpStatus.NOT_FOUND);
 
     return user;
   }
