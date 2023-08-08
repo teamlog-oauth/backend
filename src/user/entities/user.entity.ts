@@ -1,4 +1,11 @@
-import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
+import { Application } from 'src/application/entities/application.entity';
+import {
+  Column,
+  Entity,
+  JoinColumn,
+  OneToMany,
+  PrimaryGeneratedColumn,
+} from 'typeorm';
 
 @Entity()
 export class User {
@@ -16,4 +23,10 @@ export class User {
 
   @Column()
   password!: string;
+
+  @OneToMany(() => Application, (application) => application.user, {
+    eager: true,
+  })
+  @JoinColumn()
+  applications!: Application[];
 }

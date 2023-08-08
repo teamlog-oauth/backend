@@ -7,6 +7,8 @@ import { configValidationSchema } from './validate/conifg.validate';
 import { DatabaseModule } from './database.module';
 import { AuthModule } from './auth/auth.module';
 import { UserModule } from './user/user.module';
+import { ApplicationModule } from './application/application.module';
+import { OauthModule } from './oauth/oauth.module';
 
 @Module({
   imports: [
@@ -18,6 +20,8 @@ import { UserModule } from './user/user.module';
     DatabaseModule,
     AuthModule,
     UserModule,
+    ApplicationModule,
+    OauthModule,
   ],
   controllers: [AppController],
   providers: [AppService],
