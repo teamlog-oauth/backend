@@ -8,21 +8,12 @@ import { UserService } from 'src/user/user.service';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { User } from 'src/user/entities/user.entity';
 import { CacheModule } from '@nestjs/cache-manager';
-import { RefreshStrategy } from './strategies/refresh.strategy';
+import { OAuth } from 'src/oauth/entities/oauth.entity';
+import { ManageService } from 'src/manage/manage.service';
 
 @Module({
-  imports: [
-    JwtModule.registerAsync({
-      inject: [ConfigService],
-      useFactory: (config: ConfigService) => ({
-        secret: config.get<string>('JWT_SECRET'),
-        signOptions: { expiresIn: config.get<string>('JWT_EXPIRES_IN') },
-      }),
-    }),
-    TypeOrmModule.forFeature([User]),
-    CacheModule.register(),
-  ],
+  imports: [TypeOrmModule.forFeature([User, OAuth]), JwtModule],
   controllers: [AuthController],
-  providers: [AuthService, AccessStrategy, RefreshStrategy, UserService],
+  providers: [AuthService, AccessStrategy, UserService, ManageService],
 })
 export class AuthModule {}
