@@ -3,6 +3,7 @@ import {
   Column,
   Entity,
   JoinColumn,
+  JoinTable,
   OneToOne,
   PrimaryGeneratedColumn,
 } from 'typeorm';
@@ -12,21 +13,20 @@ export class OAuth {
   @PrimaryGeneratedColumn('uuid')
   uuid: string;
 
-  @OneToOne(() => Application, {
+  @OneToOne(() => Application, (application) => application.oauth, {
     onDelete: 'CASCADE',
   })
-  @JoinColumn()
   application: Application;
 
-  @Column()
+  @Column({ unique: true })
   clientId: string;
 
   @Column()
   clientSecret: string;
 
-  @Column()
-  redirectUri: string;
+  @Column({ type: 'simple-array' })
+  redirectUri: string[];
 
-  @Column()
-  authorizationUri: string;
+  @Column({ type: 'simple-array' })
+  authorizationUri: string[];
 }
