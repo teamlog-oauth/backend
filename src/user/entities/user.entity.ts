@@ -4,15 +4,13 @@ import {
   Entity,
   JoinColumn,
   OneToMany,
+  PrimaryColumn,
   PrimaryGeneratedColumn,
 } from 'typeorm';
 
 @Entity()
 export class User {
-  @PrimaryGeneratedColumn('uuid')
-  uuid!: string;
-
-  @Column({ unique: true })
+  @PrimaryColumn()
   id!: string;
 
   @Column({ primary: true })
@@ -24,9 +22,11 @@ export class User {
   @Column()
   password!: string;
 
+  @Column({ nullable: true })
+  refreshToken?: string;
+
   @OneToMany(() => Application, (application) => application.user, {
     eager: true,
   })
-  @JoinColumn()
   applications!: Application[];
 }

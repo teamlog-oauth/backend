@@ -18,25 +18,25 @@ import { Request } from 'express';
 export class UserController {
   constructor(private readonly userService: UserService) {}
 
-  @Patch(':uuid')
+  @Patch(':id')
   @UseGuards(AccessGuard)
   update(
-    @Param('uuid') uuid: string,
+    @Param('id') id: string,
     @Body() updateUserDto: UpdateUserDto,
     @Req() req: Request,
   ) {
-    if (uuid !== req.user.uuid)
+    if (id !== req.user.id)
       throw new HttpException('Unauthorized', HttpStatus.UNAUTHORIZED);
 
-    return this.userService.update(uuid, updateUserDto);
+    return this.userService.update(id, updateUserDto);
   }
 
-  @Delete(':uuid')
+  @Delete(':id')
   @UseGuards(AccessGuard)
-  remove(@Req() req: Request, @Param('uuid') uuid: string) {
-    if (uuid !== req.user.uuid)
+  remove(@Req() req: Request, @Param('id') id: string) {
+    if (id !== req.user.id)
       throw new HttpException('Unauthorized', HttpStatus.UNAUTHORIZED);
 
-    return this.userService.remove(uuid);
+    return this.userService.remove(id);
   }
 }

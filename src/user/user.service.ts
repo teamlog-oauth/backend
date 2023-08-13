@@ -28,14 +28,12 @@ export class UserService {
 
   // eslint-disable-next-line @typescript-eslint/no-inferrable-types
   public async findOne(id: string, error: boolean = true) {
-    const user =
-      (await this.userRepository.findOneBy({ uuid: id })) ??
-      (await this.userRepository.findOneBy({
-        id,
-      })) ??
-      (await this.userRepository.findOneBy({
-        email: id,
-      }));
+    const user = await this.userRepository
+      .createQueryBuilder('user')
+      .leftJoinAndSelect('user.applications', 'application')
+      .where('user.id = :id', { id })
+      .orWhere('user.email = :id', { id })
+      .getOne();
 
     if (!user && error)
       throw new HttpException('User not founds', HttpStatus.NOT_FOUND);
@@ -44,11 +42,11 @@ export class UserService {
   }
 
   public async update(id: string, updateUserDto: UpdateUserDto) {
-    const user = await this.findOne(id);
+    await this.findOne(id);
 
     const updatedUser = await this.userRepository.update(
       {
-        uuid: user.uuid,
+        id,
       },
       {
         ...updateUserDto,
@@ -59,10 +57,10 @@ export class UserService {
   }
 
   public async remove(id: string) {
-    const user = await this.findOne(id);
+    await this.findOne(id);
 
     await this.userRepository.delete({
-      uuid: user.uuid,
+      id,
     });
 
     return 'ok';
