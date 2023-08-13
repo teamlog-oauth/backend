@@ -2,6 +2,7 @@ import {
   Body,
   Controller,
   Delete,
+  Get,
   Param,
   Patch,
   Post,
@@ -18,6 +19,13 @@ import { UpdateApplicationDto } from './dto/update-application.dto';
 @Controller('application')
 export class ApplicationController {
   constructor(private readonly applicationService: ApplicationService) {}
+
+  @Get()
+  @ApiBearerAuth()
+  @UseGuards(AccessGuard)
+  async findAll(@Req() req: Request) {
+    return this.applicationService.findAll(req.user);
+  }
 
   @Post()
   @ApiBearerAuth()

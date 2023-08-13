@@ -4,6 +4,7 @@ import {
   Column,
   Entity,
   JoinColumn,
+  JoinTable,
   ManyToOne,
   OneToOne,
   PrimaryGeneratedColumn,
@@ -17,10 +18,9 @@ export class Application {
   @ManyToOne(() => User, (user) => user.applications, {
     onDelete: 'CASCADE',
   })
-  @JoinColumn()
   user: User;
 
-  @OneToOne(() => OAuth, {
+  @OneToOne(() => OAuth, (oauth) => oauth.application, {
     eager: true,
   })
   @JoinColumn()

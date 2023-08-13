@@ -13,9 +13,13 @@ export class ApplicationService {
   ) {}
 
   public async findAll(user: Express.User) {
-    return this.applicationRepository.find({
-      relations: ['user'],
-      where: { user },
+    return await this.applicationRepository.find({
+      relations: ['oauth'],
+      where: {
+        user: {
+          id: user.id,
+        },
+      },
     });
   }
 
@@ -37,7 +41,12 @@ export class ApplicationService {
   ) {
     const application = await this.applicationRepository.findOne({
       relations: ['user'],
-      where: { uuid, user },
+      where: {
+        uuid,
+        user: {
+          id: user.id,
+        },
+      },
     });
     if (!application)
       throw new HttpException('Application not found', HttpStatus.NOT_FOUND);
@@ -50,7 +59,12 @@ export class ApplicationService {
   public async remove(user: Express.User, uuid: string) {
     const application = await this.applicationRepository.findOne({
       relations: ['user'],
-      where: { uuid, user },
+      where: {
+        uuid,
+        user: {
+          id: user.id,
+        },
+      },
     });
     if (!application)
       throw new HttpException('Application not found', HttpStatus.NOT_FOUND);
